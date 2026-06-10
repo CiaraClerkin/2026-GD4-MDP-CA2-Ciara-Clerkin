@@ -11,8 +11,8 @@
 *.sln.docstates
 *.env
 
-*.vcxproj
-*.vcxproj.*
+# *.vcxproj
+# *.vcxproj.*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -429,3 +429,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/GD4_25_SFML/GD4_25_SFML.vcxproj
+/GD4_25_SFML/GD4_25_SFML.vcxproj.filters
