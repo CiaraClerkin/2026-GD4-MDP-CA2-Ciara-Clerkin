@@ -417,7 +417,7 @@ void MultiplayerGameState::HandlePacket(uint8_t packet_type, sf::Packet& packet)
 		packet >> world_height >> current_scroll;
 
 		m_world.SetWorldHeight(world_height);
-		m_world.SetCurrentBattleFieldPosition(current_scroll);
+		//m_world.SetCurrentBattleFieldPosition(current_scroll);
 
 		packet >> aircraft_count;
 		for (uint8_t i = 0; i < aircraft_count; ++i)

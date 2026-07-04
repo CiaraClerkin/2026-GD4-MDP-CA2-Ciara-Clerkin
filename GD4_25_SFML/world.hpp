@@ -57,6 +57,25 @@ private:
 
 	void UpdateSounds();
 
+	sf::Vector3f colors[16]{
+		{232.f, 123.f, 123.f}, // red
+		{237.f, 178.f, 97.f}, // light orange
+		{255.f, 230.f, 41.f}, // light yellow
+		{142.8f, 237.15f, 142.8f}, // light green
+		{173.4f, 216.75f, 229.5f}, // light blue 
+		{107.f, 123.f, 181.f}, // indigo
+		{179.f, 109.f, 155.f}, // purple
+		{223.0f, 184.0f, 255.0f}, // light purple
+		{255.0f, 181.05f, 193.8f}, // light red
+		{168.f, 255.f, 217.f}, // light teal
+		{220.f, 245.f, 122.f}, // light lime
+		{171.f, 149.f, 97.f},  //khaki
+		{181.f, 137.f, 87.f}, // brown
+		{255.f, 255.f, 255.f}, // white
+		{123.f, 126.f, 126.f}, // black
+		{60.0f, 3.0f, 78.0f} //grey	
+	};
+
 private:
 	struct SpawnPoint
 	{

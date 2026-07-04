@@ -34,7 +34,7 @@ TextureID ToTextureID(AircraftType type)
 	return TextureID::kPlayer;
 }
 
-Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts) 
+Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts, sf::Vector3f color) 
 	: Entity(Table[static_cast<int>(type)].m_hitpoints) 
 	, m_type(type) 
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
@@ -57,6 +57,8 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_identifier(0)
 	, textureRect(Table[static_cast<int>(m_type)].m_texture_rect)
 {
+	m_sprite.setColor(sf::Color(color.x, color.y, color.z, 255));
+
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
 	m_explosion.SetNumFrames(16);
 	m_explosion.SetDuration(sf::seconds(1));

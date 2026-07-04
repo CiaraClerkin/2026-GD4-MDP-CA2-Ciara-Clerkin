@@ -19,7 +19,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_scene_layers()
 	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, 5000.f))
 	, m_spawn_position(m_camera.getSize().x / 2.f, m_world_bounds.size.y - m_camera.getSize().y/2.f)
-	, m_scroll_speed(1.f) //m_scroll_speed(-50.f)
+	, m_scroll_speed(0.f) //m_scroll_speed(-50.f)
 	, m_scrollspeed_compensation(1.f)
 	, m_player_aircraft()
 	, m_enemy_spawn_points()
@@ -115,7 +115,8 @@ void World::RemoveAircraft(uint8_t identifier)
 
 Aircraft* World::AddAircraft(uint8_t identifier)
 {
-	std::unique_ptr<Aircraft> player(new Aircraft(AircraftType::kEagle, m_textures, m_fonts));
+	sf::Vector3f color = colors[identifier-1];
+	std::unique_ptr<Aircraft> player(new Aircraft(AircraftType::kEagle, m_textures, m_fonts, color));
 	player->setPosition(m_camera.getCenter());
 	std::cout << "World::AddAircraft " << +identifier << std::endl;
 	player->SetIdentifier(identifier);
@@ -277,7 +278,7 @@ void World::SpawnEnemies()
 	while (!m_enemy_spawn_points.empty() && m_enemy_spawn_points.back().m_y > GetBattleFieldBounds().position.y)
 	{
 		SpawnPoint spawn = m_enemy_spawn_points.back();
-		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.m_type, m_textures, m_fonts));
+		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.m_type, m_textures, m_fonts, {255.f, 255.f, 255.f}));
 		enemy->setPosition(sf::Vector2f(spawn.m_x, spawn.m_y));
 		enemy->setRotation(sf::degrees(180.f));
 
