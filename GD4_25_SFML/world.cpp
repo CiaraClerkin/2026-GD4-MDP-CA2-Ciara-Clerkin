@@ -19,7 +19,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_scene_layers()
 	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, 5000.f))
 	, m_spawn_position(m_camera.getSize().x / 2.f, m_world_bounds.size.y - m_camera.getSize().y/2.f)
-	, m_scroll_speed(-50.f)
+	, m_scroll_speed(1.f) //m_scroll_speed(-50.f)
 	, m_scrollspeed_compensation(1.f)
 	, m_player_aircraft()
 	, m_enemy_spawn_points()
@@ -76,7 +76,7 @@ void World::Update(sf::Time dt)
 
 void World::Draw()
 {
-	if (PostEffect::IsSupported())
+	/*if (PostEffect::IsSupported())
 	{
 		m_scene_texture.clear();
 		m_scene_texture.setView(m_camera);
@@ -84,7 +84,7 @@ void World::Draw()
 		m_scene_texture.display();
 		m_bloom_effect.Apply(m_scene_texture, m_target);
 	}
-	else
+	else*/
 	{
 		m_target.setView(m_camera);
 		m_target.draw(m_scene_graph);
@@ -175,6 +175,7 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kFinishLine, "Media/Textures/FinishLine.png");
 	m_textures.Load(TextureID::kJungle, "Media/Textures/Jungle.png");
 	m_textures.Load(TextureID::kParticle, "Media/Textures/Particle.png");
+	m_textures.Load(TextureID::kPlayer, "Media/Textures/16x16 All Animations-Sheet.png");
 }
 
 void World::BuildScene()
@@ -248,7 +249,7 @@ void World::AdaptPlayerVelocity()
 			aircraft->SetVelocity(velocity / std::sqrt(2.f));
 		}
 		//Add scrolling velocity
-		aircraft->Accelerate(0.f, m_scroll_speed);
+		//aircraft->Accelerate(0.f, m_scroll_speed);
 	}
 }
 

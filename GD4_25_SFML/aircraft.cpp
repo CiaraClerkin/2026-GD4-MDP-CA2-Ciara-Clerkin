@@ -22,7 +22,7 @@ TextureID ToTextureID(AircraftType type)
 	switch (type)
 	{
 	case AircraftType::kEagle:
-		return TextureID::kEagle;
+		return TextureID::kPlayer;
 		break;
 	case AircraftType::kRaptor:
 		return TextureID::kRaptor;
@@ -31,7 +31,7 @@ TextureID ToTextureID(AircraftType type)
 		return TextureID::kAvenger;
 		break;
 	}
-	return TextureID::kEagle;
+	return TextureID::kPlayer;
 }
 
 Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts) 
@@ -55,12 +55,15 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_explosion_began(false)
 	, m_pickups_enabled(true)
 	, m_identifier(0)
+	, textureRect(Table[static_cast<int>(m_type)].m_texture_rect)
 {
 	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
 	m_explosion.SetNumFrames(16);
 	m_explosion.SetDuration(sf::seconds(1));
 	Utility::CentreOrigin(m_sprite);
 	Utility::CentreOrigin(m_explosion);
+
+	m_sprite.setScale({ 6.0f, 6.0f });
 
 	m_fire_command.category = static_cast<int>(ReceiverCategories::kScene);
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time dt)
@@ -392,10 +395,9 @@ void Aircraft::UpdateRollAnimation()
 {
 	if (Table[static_cast<int>(m_type)].m_has_roll_animation)
 	{
-		sf::IntRect textureRect = Table[static_cast<int>(m_type)].m_texture_rect;
 
 		//Roll left: Texture rect is offset once
-		if (GetVelocity().x < 0.f)
+		/*if (GetVelocity().x < 0.f)
 		{
 			textureRect.position.x += textureRect.size.x;
 		}
@@ -403,7 +405,98 @@ void Aircraft::UpdateRollAnimation()
 		{
 			textureRect.position.x += 2 * textureRect.size.x;
 		}
-		m_sprite.setTextureRect(textureRect);
+		m_sprite.setTextureRect(textureRect);*/
 
+		if (clock.getElapsedTime().asSeconds() > 0.2f)
+		{
+			if (GetVelocity().x == 0 && GetVelocity().y == 0)
+			{
+				spriteStart.x = 0;
+				spriteStart.y = 24;
+			}
+			else
+			{
+				if (GetVelocity().x == 0 || GetVelocity().y == 0)
+				{
+					if (GetVelocity().x > 0)
+					{
+						m_sprite.setScale({ 6.0f, 6.0f });
+						spriteStart.x = 24 * 8;
+						spriteStart.y = 24 * 2;
+					}
+					else if (GetVelocity().x < 0)
+					{
+						m_sprite.setScale({ -6.0f, 6.0f });
+						spriteStart.x = 24 * 8;
+						spriteStart.y = 24 * 2;
+					}
+
+					if (GetVelocity().y > 0)
+					{
+						spriteStart.x = 0;
+						spriteStart.y = 24 * 2;
+					}
+					else if (GetVelocity().y < 0)
+					{
+						spriteStart.x = 24 * 16;
+						spriteStart.y = 24 * 2;
+					}
+				}
+				else
+				{
+					if (GetVelocity().y > 0)
+					{
+						if (GetVelocity().x > 0)
+						{
+							m_sprite.setScale({ 6.0f, 6.0f });
+							spriteStart.x = 24 * 4;
+							spriteStart.y = 24 * 2;
+						}
+						else
+						{
+							m_sprite.setScale({ -6.0f, 6.0f });
+							spriteStart.x = 24 * 4;
+							spriteStart.y = 24 * 2;
+						}
+					}
+					else
+					{
+						if (GetVelocity().x > 0)
+						{
+							m_sprite.setScale({ 6.0f, 6.0f });
+							spriteStart.x = 24 * 12;
+							spriteStart.y = 24 * 2;
+						}
+						else
+						{
+							m_sprite.setScale({ -6.0f, 6.0f });
+							spriteStart.x = 24 * 12;
+							spriteStart.y = 24 * 2;
+						}
+					}
+				}
+			}
+
+			if (m_sprite.getTextureRect().position.x < spriteStart.x)
+			{
+				textureRect.position.x = spriteStart.x;
+				textureRect.position.y = spriteStart.y;
+				m_sprite.setTextureRect(textureRect);
+			}
+
+			//m_sprite.getTextureRect().left
+			if (m_sprite.getTextureRect().position.x > spriteStart.x + (24 * 2))
+			{
+				textureRect.position.x = spriteStart.x;
+				textureRect.position.y = spriteStart.y;
+			}
+			else
+			{
+				textureRect.position.x += 24;
+			}
+
+			m_sprite.setTextureRect(textureRect);
+			clock.restart();
+		}
 	}
 }

@@ -8,7 +8,7 @@
 *.suo
 *.user
 *.userosscache
-*.sln.docstates
+# *.sln.docstates
 *.env
 
 # *.vcxproj
@@ -416,7 +416,7 @@ FodyWeavers.xsd
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-*.vcxproj
+#.vcxproj
 # Local History for Visual Studio Code
 .history/
 
@@ -429,5 +429,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-/GD4_25_SFML/GD4_25_SFML.vcxproj
-/GD4_25_SFML/GD4_25_SFML.vcxproj.filters
+#/GD4_25_SFML/GD4_25_SFML.vcxproj
+#/GD4_25_SFML/GD4_25_SFML.vcxproj.filters

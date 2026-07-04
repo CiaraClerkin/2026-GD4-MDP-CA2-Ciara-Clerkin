@@ -81,5 +81,8 @@ private:
 
 	uint8_t m_identifier;
 
+	sf::IntRect textureRect;
+	sf::Vector2i spriteStart;
+	sf::Clock clock;
 };
 
