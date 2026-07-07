@@ -116,7 +116,7 @@ void MultiplayerGameState::Draw()
 		m_world.Draw();
 
 		//Show the broadcast message in default view
-		m_window.setView(m_window.getDefaultView());
+		//m_window.setView(m_window.getDefaultView());
 
 		if (!m_broadcasts.empty())
 		{
@@ -517,10 +517,10 @@ void MultiplayerGameState::HandlePacket(uint8_t packet_type, sf::Packet& packet)
 		uint8_t aircraft_count;
 		packet >> current_world_position >> aircraft_count;
 
-		float current_view_position = m_world.GetViewBounds().position.y + m_world.GetViewBounds().size.y;
+		//float current_view_position = m_world.GetViewBounds().position.y + m_world.GetViewBounds().size.y;
 
 		//Set the world's scroll compensation according to whether the view is behind or ahead
-		m_world.SetWorldScrollCompensation(current_view_position / current_world_position);
+		//m_world.SetWorldScrollCompensation(current_view_position / current_world_position);
 
 		for (uint8_t i = 0; i < aircraft_count; ++i)
 		{
@@ -532,13 +532,21 @@ void MultiplayerGameState::HandlePacket(uint8_t packet_type, sf::Packet& packet)
 
 			Aircraft* aircraft = m_world.GetAircraft(aircraft_identifier);
 			bool is_local_plane = std::find(m_local_player_identifiers.begin(), m_local_player_identifiers.end(), aircraft_identifier) != m_local_player_identifiers.end();
-			if (aircraft && !is_local_plane)
+			if (aircraft)
 			{
-				sf::Vector2f interpolated_position = aircraft->getPosition() + (aircraft_position - aircraft->getPosition()) * 0.1f;
-				aircraft->setPosition(interpolated_position);
-				aircraft->SetHitpoints(hitpoints);
-				aircraft->SetMissileAmmo(ammo);
+				if (!is_local_plane)
+				{
+					sf::Vector2f interpolated_position = aircraft->getPosition() + (aircraft_position - aircraft->getPosition()) * 0.1f;
+					aircraft->setPosition(interpolated_position);
+					aircraft->SetHitpoints(hitpoints);
+					aircraft->SetMissileAmmo(ammo);
+				}
+				else
+				{
+					m_window.setView(m_world.GetPlayerView(aircraft_identifier));
+				}
 			}
+			
 		}
 	}
 	break;

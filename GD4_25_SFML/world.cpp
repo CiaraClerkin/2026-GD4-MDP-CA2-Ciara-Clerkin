@@ -68,7 +68,7 @@ void World::Update(sf::Time dt)
 	SpawnEnemies();
 
 	m_scene_graph.Update(dt, m_command_queue);
-	AdaptPlayerPosition();
+	//AdaptPlayerPosition();
 	//UpdateSounds();
 }
 
@@ -89,6 +89,13 @@ void World::Draw()
 		m_target.setView(m_camera);
 		m_target.draw(m_scene_graph);
 	}
+}
+
+sf::View World::GetPlayerView(int identifier)
+{
+	Aircraft* a = GetAircraft(identifier);
+	m_camera.setCenter(sf::Vector2f(a->getPosition().x, a->getPosition().y));
+	return m_camera;
 }
 
 Aircraft* World::GetAircraft(int identifier) const
@@ -354,7 +361,8 @@ sf::FloatRect World::GetViewBounds() const
 sf::FloatRect World::GetBattleFieldBounds() const
 {
 	//Return camera bounds + a small area off screen where the enemies spawn
-	sf::FloatRect bounds = GetViewBounds();
+	//sf::FloatRect bounds = GetViewBounds();
+	sf::FloatRect bounds = { {0.f, 0.f}, {3000.f, 3000.f} };
 	bounds.position.y -= 100.f;
 	bounds.size.y += 100.f;
 	return bounds;
