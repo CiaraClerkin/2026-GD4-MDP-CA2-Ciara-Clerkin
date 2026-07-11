@@ -34,9 +34,10 @@ TextureID ToTextureID(AircraftType type)
 	return TextureID::kPlayer;
 }
 
-Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts, sf::Vector3f color) 
-	: Entity(Table[static_cast<int>(type)].m_hitpoints) 
-	, m_type(type) 
+Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts, sf::Vector3f color)
+	: Entity(Table[static_cast<int>(type)].m_hitpoints)
+	, m_type(type)
+	, m_zombie_sprite(textures.Get(Table[static_cast<int>(AircraftType::kAvenger)].m_texture), Table[static_cast<int>(AircraftType::kAvenger)].m_texture_rect)
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
 	, m_health_display(nullptr)
 	, m_missile_display(nullptr)
@@ -501,4 +502,10 @@ void Aircraft::UpdateRollAnimation()
 			clock.restart();
 		}
 	}
+}
+
+void Aircraft::SetIsZombie()
+{
+	mIsZombie = true;
+	m_sprite.setTexture(m_zombie_sprite.getTexture());
 }

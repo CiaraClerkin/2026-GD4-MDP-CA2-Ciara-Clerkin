@@ -32,7 +32,7 @@ std::vector<AircraftData> InitializeAircraftData()
 	data[static_cast<int>(AircraftType::kAvenger)].m_hitpoints = 40;
 	data[static_cast<int>(AircraftType::kAvenger)].m_speed = 50.f;
 	data[static_cast<int>(AircraftType::kAvenger)].m_fire_interval = sf::seconds(2);
-	data[static_cast<int>(AircraftType::kAvenger)].m_texture = TextureID::kEntities;
+	data[static_cast<int>(AircraftType::kAvenger)].m_texture = TextureID::kZombie;
 	data[static_cast<int>(AircraftType::kAvenger)].m_texture_rect = sf::IntRect({ 228, 0 }, { 60, 59});
 	data[static_cast<int>(AircraftType::kAvenger)].m_has_roll_animation = false;
 

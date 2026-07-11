@@ -124,6 +124,7 @@ Aircraft* World::AddAircraft(uint8_t identifier)
 {
 	sf::Vector3f color = colors[identifier-1];
 	std::unique_ptr<Aircraft> player(new Aircraft(AircraftType::kEagle, m_textures, m_fonts, color));
+	if (m_player_aircraft.empty()) player->SetIsZombie();
 	player->setPosition(m_camera.getCenter());
 	std::cout << "World::AddAircraft " << +identifier << std::endl;
 	player->SetIdentifier(identifier);
@@ -184,6 +185,7 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kJungle, "Media/Textures/Jungle.png");
 	m_textures.Load(TextureID::kParticle, "Media/Textures/Particle.png");
 	m_textures.Load(TextureID::kPlayer, "Media/Textures/16x16 All Animations-Sheet.png");
+	m_textures.Load(TextureID::kZombie, "Media/Textures/16x16 All Animations-Sheet Zombie.png");
 }
 
 void World::BuildScene()
@@ -456,6 +458,17 @@ void World::HandleCollisions()
 				pair.first->SetZOrder(110);
 				pair.second->SetZOrder(4);
 			}
+
+			if (player1.GetIsZombie())
+			{
+				player2.SetIsZombie();
+			}
+
+			if (player2.GetIsZombie())
+			{
+				player1.SetIsZombie();
+			}
+			
 		}
 		else if (MatchesCategories(pair, ReceiverCategories::kPlayerAircraft, ReceiverCategories::kEnemyAircraft))
 		{

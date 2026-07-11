@@ -22,5 +22,6 @@ enum class TextureID
 	kJungle,
 	kParticle,
 	kNumTextures,
-	kPlayer
+	kPlayer,
+	kZombie
 };

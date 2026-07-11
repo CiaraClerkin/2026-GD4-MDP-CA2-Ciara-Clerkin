@@ -37,6 +37,9 @@ public:
 	void Remove() override;
 	void PlayLocalSound(CommandQueue& commands, SoundEffect effect);
 
+	bool GetIsZombie() { return mIsZombie; }
+	void SetIsZombie();
+
 private:
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -49,6 +52,7 @@ private:
 
 private:
 	AircraftType m_type;
+	sf::Sprite m_zombie_sprite;
 	sf::Sprite m_sprite;
 	Animation m_explosion;
 
@@ -84,5 +88,7 @@ private:
 	sf::IntRect textureRect;
 	sf::Vector2i spriteStart;
 	sf::Clock clock;
+
+	bool mIsZombie;
 };
 
