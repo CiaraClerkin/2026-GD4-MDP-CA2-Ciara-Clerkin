@@ -10,6 +10,7 @@ void SceneNode::AttachChild(Ptr child)
 	child->m_parent = this;
 	//Use emplace_back rather than push_back and understand why
 	m_children.emplace_back(std::move(child));
+	std::sort(m_children.begin(), m_children.end(), [](SceneNode::Ptr &a, SceneNode::Ptr &b) { return a->GetZOrder() > b->GetZOrder(); });
 }
 
 

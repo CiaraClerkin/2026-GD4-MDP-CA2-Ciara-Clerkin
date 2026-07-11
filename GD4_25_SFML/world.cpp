@@ -440,7 +440,24 @@ void World::HandleCollisions()
 
 	for (SceneNode::Pair pair : collision_pairs)
 	{
-		if (MatchesCategories(pair, ReceiverCategories::kPlayerAircraft, ReceiverCategories::kEnemyAircraft))
+		if (MatchesCategories(pair, ReceiverCategories::kPlayerAircraft, ReceiverCategories::kPlayerAircraft))
+		{
+			auto& player1 = static_cast<Aircraft&>(*pair.first);
+			auto& player2 = static_cast<Aircraft&>(*pair.second);
+
+			// Setting the Z-Order of Game Objects for accurate depth.
+			if (player1.getPosition().y > player2.getPosition().y)
+			{
+				pair.first->SetZOrder(4);
+				pair.second->SetZOrder(110);
+			}
+			else
+			{
+				pair.first->SetZOrder(110);
+				pair.second->SetZOrder(4);
+			}
+		}
+		else if (MatchesCategories(pair, ReceiverCategories::kPlayerAircraft, ReceiverCategories::kEnemyAircraft))
 		{
 			auto& player = static_cast<Aircraft&>(*pair.first);
 			auto& enemy = static_cast<Aircraft&>(*pair.second);

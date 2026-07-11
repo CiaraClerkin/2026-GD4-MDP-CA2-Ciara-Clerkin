@@ -31,6 +31,9 @@ public:
 	virtual unsigned int GetCategory() const;
 	void RemoveWrecks();
 
+	const int& GetZOrder() { return mZOrder; };
+	void SetZOrder(int inZOrder) { mZOrder = inZOrder; };
+
 protected:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands);
 
@@ -51,6 +54,7 @@ private:
 	std::vector<Ptr> m_children;
 	SceneNode* m_parent;
 	ReceiverCategories m_default_category;
+	int mZOrder;
 };
 float Distance(const SceneNode& lhs, const SceneNode& rhs);
 bool Collision(const SceneNode& lhs, const SceneNode& rhs);
