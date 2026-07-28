@@ -5,7 +5,7 @@ GameState::GameState(StateStack& stack, Context context) : State(stack, context)
 {
 	m_world.AddAircraft(1);
 	m_player.SetMissionStatus(MissionStatus::kMissionRunning);
-	context.music->Play(MusicThemes::kMissionTheme);
+	//context.music->Play(MusicThemes::kMissionTheme);
 }
 
 void GameState::Draw()

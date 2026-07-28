@@ -8,6 +8,7 @@
 #include "music_player.hpp"
 #include "sound_player.hpp"
 #include "key_binding.hpp"
+#include <SFML/Graphics/Text.hpp>
 
 class Application
 {
@@ -34,5 +35,8 @@ private:
 
 	KeyBinding m_key_binding_1;
 	KeyBinding m_key_binding_2;
+
+	//sf::Clock m_timer;
+	//sf::Text m_timerText;
 };
 

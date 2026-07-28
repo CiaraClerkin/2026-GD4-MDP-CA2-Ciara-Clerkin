@@ -42,6 +42,8 @@ public:
 	void CreatePickup(sf::Vector2f position, PickupType type);
 	bool PollGameAction(GameActions::Action& out);
 
+	bool AreAllZombies();
+
 private:
 	void LoadTextures();
 	void BuildScene();

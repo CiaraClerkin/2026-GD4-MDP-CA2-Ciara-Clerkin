@@ -105,7 +105,7 @@ MultiplayerGameState::MultiplayerGameState(StateStack& stack, Context context, b
 	m_socket.setBlocking(false);
 
 	//Play the game music
-	context.music->Play(MusicThemes::kMissionTheme);
+	//context.music->Play(MusicThemes::kMissionTheme);
 	
 }
 

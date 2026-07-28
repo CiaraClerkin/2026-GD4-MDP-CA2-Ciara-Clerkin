@@ -1,8 +1,8 @@
 #include "text_node.hpp"
 #include "utility.hpp"
 
-TextNode::TextNode(const FontHolder& fonts, std::string& text)
-	:m_text(fonts.Get(FontID::kMain), text, 20)
+TextNode::TextNode(const FontHolder& fonts, std::string& text, int size)
+	:m_text(fonts.Get(FontID::kMain), text, size)
 {
 }
 

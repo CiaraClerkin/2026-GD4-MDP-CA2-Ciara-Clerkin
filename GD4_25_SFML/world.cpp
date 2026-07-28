@@ -9,7 +9,7 @@
 #include "particletype.hpp"
 #include "sound_node.hpp"
 
-World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked)
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, bool networked) 
 	: m_target(output_target)
 	, m_camera(output_target.getDefaultView())
 	, m_textures()
@@ -85,9 +85,33 @@ void World::Draw()
 		m_bloom_effect.Apply(m_scene_texture, m_target);
 	}
 	else*/
+
 	{
 		m_target.setView(m_camera);
 		m_target.draw(m_scene_graph);
+
+	}
+
+	if (AreAllZombies())
+	{
+		sf::RectangleShape rect;
+		rect.setSize(sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y));
+		rect.setFillColor(sf::Color(0, 0, 30, 80));
+		rect.setPosition({ m_camera.getCenter().x - m_camera.getSize().x / 2, m_camera.getCenter().y - m_camera.getSize().y / 2 });
+		m_target.draw(rect);
+
+		std::string* missile_ammo = new std::string("Zombies Win!");
+		std::unique_ptr<TextNode> text(new TextNode(m_fonts, *missile_ammo, 100));
+
+		text->setPosition({ m_camera.getCenter().x - (50 * missile_ammo->length())/2, m_camera.getCenter().y - 50 });
+
+		/*sf::Text text(context.fonts->Get(FontID::kMain), "", 16);
+		text.setString("Zombies Win!");
+		text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
+		text.setCharacterSize(100);
+		text.setPosition(origin.mX, origin.mY);
+		text.setFont(*FontManager::sInstance->GetFont("carlito"));*/
+		m_target.draw(*text);
 	}
 }
 
@@ -124,7 +148,11 @@ Aircraft* World::AddAircraft(uint8_t identifier)
 {
 	sf::Vector3f color = colors[identifier-1];
 	std::unique_ptr<Aircraft> player(new Aircraft(AircraftType::kEagle, m_textures, m_fonts, color));
-	if (m_player_aircraft.empty()) player->SetIsZombie();
+	
+	if (m_player_aircraft.empty()) {
+		player->SetIsZombie();
+	} 
+	
 	player->setPosition(m_camera.getCenter());
 	std::cout << "World::AddAircraft " << +identifier << std::endl;
 	player->SetIdentifier(identifier);
@@ -538,6 +566,19 @@ void World::UpdateSounds()
 	m_sounds.SetListenerPosition(listener_position);
 
 	m_sounds.RemoveStoppedSounds();
+}
+
+bool World::AreAllZombies()
+{
+	for (Aircraft* a : m_player_aircraft)
+	{
+		if (!a->GetIsZombie())
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 

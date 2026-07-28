@@ -5,7 +5,7 @@
 class TextNode : public SceneNode
 {
 public:
-	explicit TextNode(const FontHolder& fonts, std::string& text);
+	explicit TextNode(const FontHolder& fonts, std::string& text, int size=20);
 	void SetString(const std::string& text);
 	//virtual unsigned int GetCategory() const override;
 

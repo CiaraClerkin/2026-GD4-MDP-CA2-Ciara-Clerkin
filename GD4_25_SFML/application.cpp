@@ -9,11 +9,13 @@
 #include "game_over_state.hpp"
 #include "multiplayer_gamestate.hpp"
 
-Application::Application() 
+Application::Application()
 	: m_window(sf::VideoMode({ 1024, 768 }), "States", sf::Style::Close)
 	, m_key_binding_1(1)
 	, m_key_binding_2(2)
 	, m_stack(State::Context(m_window, m_textures, m_fonts, m_music, m_sound, m_key_binding_1, m_key_binding_2))
+	//, m_timer()
+	//, m_timerText(m_fonts.Get(FontID::kMain), "", 16)
 {
 	m_window.setKeyRepeatEnabled(false);
 	m_fonts.Load(FontID::kMain, "Media/Fonts/Sansation.ttf");
@@ -70,6 +72,18 @@ void Application::Render()
 	m_window.clear();
 	m_stack.Draw();
 	m_window.display();
+	//if (m_timer.getElapsedTime().asSeconds() > 120)
+	{
+		//std::string* missile_ammo = new std::string("");
+		//std::unique_ptr<TextNode> m_clockText(new TextNode(m_fonts, missile_ammo));
+		
+		//std::string* missile_ammo = new std::string(std::to_string(m_clock.getElapsedTime().asSeconds()));
+		//std::unique_ptr<TextNode> missile_display(new TextNode(m_fonts, *missile_ammo));
+		//missile_display->setPosition(sf::Vector2f(0.f, 70.f));
+		//m_clockText = missile_display.get();
+		//m_timerText.setString(std::to_string(m_timer.getElapsedTime().asSeconds()));
+		//m_window.draw(m_timerText);
+	}
 }
 
 void Application::RegisterStates()
