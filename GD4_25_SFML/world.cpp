@@ -27,6 +27,8 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_networked_world(networked)
 	, m_network_node(nullptr)
 	, m_finish_sprite(nullptr)
+	, m_timer()
+	, m_gameTime(10)
 {
 	m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y });
 	LoadTextures();
@@ -92,26 +94,23 @@ void World::Draw()
 
 	}
 
+	if (m_player_aircraft.size() > 1 && m_timer.getElapsedTime().asSeconds() <= m_gameTime + 1 && !AreAllZombies())
+	{
+		std::string* timerText = new std::string(std::to_string((int)m_timer.getElapsedTime().asSeconds()));
+		std::unique_ptr<TextNode> timerTextNode(new TextNode(m_fonts, *timerText, 50));
+	
+		timerTextNode->setPosition({ m_camera.getCenter().x - (25 * timerText->length()) / 2, m_camera.getCenter().y - m_camera.getSize().y/2});
+
+		m_target.draw(*timerTextNode);
+	}
+
 	if (AreAllZombies())
 	{
-		sf::RectangleShape rect;
-		rect.setSize(sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y));
-		rect.setFillColor(sf::Color(0, 0, 30, 80));
-		rect.setPosition({ m_camera.getCenter().x - m_camera.getSize().x / 2, m_camera.getCenter().y - m_camera.getSize().y / 2 });
-		m_target.draw(rect);
-
-		std::string* missile_ammo = new std::string("Zombies Win!");
-		std::unique_ptr<TextNode> text(new TextNode(m_fonts, *missile_ammo, 100));
-
-		text->setPosition({ m_camera.getCenter().x - (50 * missile_ammo->length())/2, m_camera.getCenter().y - 50 });
-
-		/*sf::Text text(context.fonts->Get(FontID::kMain), "", 16);
-		text.setString("Zombies Win!");
-		text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
-		text.setCharacterSize(100);
-		text.setPosition(origin.mX, origin.mY);
-		text.setFont(*FontManager::sInstance->GetFont("carlito"));*/
-		m_target.draw(*text);
+		EndScreen("Zombies Win!");
+	}
+	else if (m_timer.getElapsedTime().asSeconds() > m_gameTime + 1)
+	{
+		EndScreen("Survivors Win!");
 	}
 }
 
@@ -152,6 +151,8 @@ Aircraft* World::AddAircraft(uint8_t identifier)
 	if (m_player_aircraft.empty()) {
 		player->SetIsZombie();
 	} 
+
+	m_timer.restart();
 	
 	player->setPosition(m_camera.getCenter());
 	std::cout << "World::AddAircraft " << +identifier << std::endl;
@@ -570,6 +571,8 @@ void World::UpdateSounds()
 
 bool World::AreAllZombies()
 {
+	if (m_player_aircraft.size() == 1) return false;
+
 	for (Aircraft* a : m_player_aircraft)
 	{
 		if (!a->GetIsZombie())
@@ -579,6 +582,28 @@ bool World::AreAllZombies()
 	}
 
 	return true;
+}
+
+void World::EndScreen(std::string inEndText)
+{
+	sf::RectangleShape rect;
+	rect.setSize(sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y));
+	rect.setFillColor(sf::Color(0, 0, 30, 80));
+	rect.setPosition({ m_camera.getCenter().x - m_camera.getSize().x / 2, m_camera.getCenter().y - m_camera.getSize().y / 2 });
+	m_target.draw(rect);
+
+	std::string* text = new std::string(inEndText);
+	std::unique_ptr<TextNode> endText(new TextNode(m_fonts, *text, 100));
+
+	endText->setPosition({ m_camera.getCenter().x - (50 * text->length()) / 2, m_camera.getCenter().y - 50 });
+
+	/*sf::Text text(context.fonts->Get(FontID::kMain), "", 16);
+	text.setString("Zombies Win!");
+	text.setFillColor(sf::Color(inColor.mX, inColor.mY, inColor.mZ, 255));
+	text.setCharacterSize(100);
+	text.setPosition(origin.mX, origin.mY);
+	text.setFont(*FontManager::sInstance->GetFont("carlito"));*/
+	m_target.draw(*endText);
 }
 
 

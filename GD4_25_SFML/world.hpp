@@ -13,6 +13,8 @@
 #include "pickup_type.hpp"
 #include "network_node.hpp"
 
+#include <thread>
+
 class World
 {
 public:
@@ -60,6 +62,8 @@ private:
 	void DestroyEntitiesOutsideView();
 
 	void UpdateSounds();
+
+	void EndScreen(std::string inEndText);
 
 	sf::Vector3f colors[16]{
 		{232.f, 123.f, 123.f}, // red
@@ -117,5 +121,8 @@ private:
 	bool m_networked_world;
 	NetworkNode* m_network_node;
 	SpriteNode* m_finish_sprite;
+
+	sf::Clock m_timer;
+	int m_gameTime;
 };
 
