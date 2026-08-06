@@ -13,8 +13,6 @@
 #include "pickup_type.hpp"
 #include "network_node.hpp"
 
-#include <thread>
-
 class World
 {
 public:
@@ -45,6 +43,8 @@ public:
 	bool PollGameAction(GameActions::Action& out);
 
 	bool AreAllZombies();
+
+	void ProcessCollisionsWithScreenWalls(Aircraft* a);
 
 private:
 	void LoadTextures();
@@ -82,6 +82,26 @@ private:
 		{255.f, 255.f, 255.f}, // white
 		{123.f, 126.f, 126.f}, // black
 		{60.0f, 3.0f, 78.0f} //grey	
+	};
+
+	sf::Vector2f spawnPositions[16]{
+		
+		{500.f, 4500.f + 200.f},
+		{1100.f, 4500.f + 200.f},
+		{1700.f, 4500.f + 200.f},
+		{2300.f, 4500.f + 200.f},
+		{2900.f, 4500.f + 200.f},
+		{3500.f, 4500.f + 200.f},
+		{4100.f, 4500.f + 200.f},
+		{4100.f, 4500.f + 800.f},
+		{4100.f, 4500.f + 1400.f},
+		{4100.f, 4500.f + 2000.f},
+		{3500.f, 4500.f + 2000.f},
+		{2900.f, 4500.f + 2000.f},
+		{2300.f, 4500.f + 2000.f},
+		{1700.f, 4500.f + 2000.f},
+		{1100.f, 4500.f + 2000.f},
+		{500.f, 4500.f + 2000.f}
 	};
 
 private:

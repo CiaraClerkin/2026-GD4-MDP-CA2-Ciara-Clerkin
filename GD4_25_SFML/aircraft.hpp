@@ -40,6 +40,9 @@ public:
 	bool GetIsZombie() { return mIsZombie; }
 	void SetIsZombie();
 
+	bool GetIsFirstTime() { return mIsFirstTime; }
+	void SetIsFirstTime(bool inFirstTime) { mIsFirstTime = inFirstTime; }
+
 private:
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -90,5 +93,7 @@ private:
 	sf::Clock clock;
 
 	bool mIsZombie;
+
+	bool mIsFirstTime;
 };
 

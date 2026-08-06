@@ -17,10 +17,10 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_sounds(sounds)
 	, m_scene_graph(ReceiverCategories::kNone)
 	, m_scene_layers()
-	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, 5000.f))
-	, m_spawn_position(m_camera.getSize().x / 2.f, m_world_bounds.size.y - m_camera.getSize().y/2.f)
+	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(4096, 2304))
+	, m_spawn_position({ 0, 0 })
 	, m_scroll_speed(0.f) //m_scroll_speed(-50.f)
-	, m_scrollspeed_compensation(1.f)
+	, m_scrollspeed_compensation(0.f)
 	, m_player_aircraft()
 	, m_enemy_spawn_points()
 	, m_active_enemies()
@@ -33,7 +33,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y });
 	LoadTextures();
 	BuildScene();
-	m_camera.setCenter(m_spawn_position);
+	//m_camera.setCenter(m_spawn_position);
 }
 
 void World::SetWorldScrollCompensation(float compensation)
@@ -44,11 +44,21 @@ void World::SetWorldScrollCompensation(float compensation)
 void World::Update(sf::Time dt)
 {
 	//Scroll the world
-	m_camera.move(sf::Vector2f(0, m_scroll_speed * dt.asSeconds() * m_scrollspeed_compensation));
+	//m_camera.move(sf::Vector2f(0, m_scroll_speed * dt.asSeconds() * m_scrollspeed_compensation));
 
-	for (Aircraft* a : m_player_aircraft)
+	for (int i = 0; i < m_player_aircraft.size(); i++)
 	{
-		a->SetVelocity(0.f, 0.f);
+		//std::cout << "X: " << std::string(std::to_string(a->getPosition().x)) << "Y: " << std::string(std::to_string(a->getPosition().x)) << std::endl;
+		m_player_aircraft[i]->SetVelocity(0.f, 0.f);
+
+		// Set Spawn for the players (they all spawn in the same location and I couldn't find out why or where the code doing that was so this was my solution)
+		if (m_player_aircraft[i]->GetIsFirstTime())
+		{
+			m_player_aircraft[i]->setPosition(spawnPositions[i]);
+			m_player_aircraft[i]->SetIsFirstTime(false);
+		}
+
+		ProcessCollisionsWithScreenWalls(m_player_aircraft[i]);
 	}
 
 	DestroyEntitiesOutsideView();
@@ -67,7 +77,7 @@ void World::Update(sf::Time dt)
 	m_player_aircraft.erase(first_to_remove, m_player_aircraft.end());
 	m_scene_graph.RemoveWrecks();
 
-	SpawnEnemies();
+	//SpawnEnemies();
 
 	m_scene_graph.Update(dt, m_command_queue);
 	//AdaptPlayerPosition();
@@ -145,21 +155,26 @@ void World::RemoveAircraft(uint8_t identifier)
 
 Aircraft* World::AddAircraft(uint8_t identifier)
 {
-	sf::Vector3f color = colors[identifier-1];
+	sf::Vector3f color = colors[identifier - 1];
 	std::unique_ptr<Aircraft> player(new Aircraft(AircraftType::kEagle, m_textures, m_fonts, color));
-	
+
 	if (m_player_aircraft.empty()) {
 		player->SetIsZombie();
-	} 
+	}
 
 	m_timer.restart();
-	
-	player->setPosition(m_camera.getCenter());
+
 	std::cout << "World::AddAircraft " << +identifier << std::endl;
+	std::cout << "X: " << std::string(std::to_string(player->getPosition().x)) << "Y: " << std::string(std::to_string(player->getPosition().y)) << +identifier << std::endl;
 	player->SetIdentifier(identifier);
+	player->setPosition(spawnPositions[identifier - 1]);
+	std::cout << "X: " << std::string(std::to_string(player->getPosition().x)) << "Y: " << std::string(std::to_string(player->getPosition().y)) << +identifier << std::endl;
 
 	m_player_aircraft.emplace_back(player.get());
 	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(player));
+
+	//std::cout << "X: " << std::string(std::to_string(player->getPosition().x)) << "Y: " << std::string(std::to_string(player->getPosition().x)) << +identifier << std::endl;
+
 	return m_player_aircraft.back();
 }
 
@@ -211,7 +226,7 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kEntities, "Media/Textures/Entities.png");
 	m_textures.Load(TextureID::kExplosion, "Media/Textures/Explosion.png");
 	m_textures.Load(TextureID::kFinishLine, "Media/Textures/FinishLine.png");
-	m_textures.Load(TextureID::kJungle, "Media/Textures/Jungle.png");
+	m_textures.Load(TextureID::kJungle, "Media/Textures/map.png");
 	m_textures.Load(TextureID::kParticle, "Media/Textures/Particle.png");
 	m_textures.Load(TextureID::kPlayer, "Media/Textures/16x16 All Animations-Sheet.png");
 	m_textures.Load(TextureID::kZombie, "Media/Textures/16x16 All Animations-Sheet Zombie.png");
@@ -232,13 +247,15 @@ void World::BuildScene()
 	sf::Texture& texture = m_textures.Get(TextureID::kJungle);
 	sf::IntRect texture_rect(m_world_bounds);
 	texture.setRepeated(true);
+	//texture.resize({ 1980, 1080 });
 
 	float view_height = m_camera.getSize().y;
-	texture_rect.size.y += static_cast<int>(view_height);
+	//texture_rect.size.y += static_cast<int>(view_height);
+	//texture_rect.size.y += 2304;
 
 	//Add the background sprite to the world
 	std::unique_ptr<SpriteNode> background_sprite(new SpriteNode(texture, texture_rect));
-	background_sprite->setPosition(sf::Vector2f(m_world_bounds.position.x, m_world_bounds.position.y - view_height));
+	background_sprite->setPosition(sf::Vector2f(300, 4500));
 	m_scene_layers[static_cast<int>(SceneLayers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Add the finish line
@@ -604,6 +621,34 @@ void World::EndScreen(std::string inEndText)
 	text.setPosition(origin.mX, origin.mY);
 	text.setFont(*FontManager::sInstance->GetFont("carlito"));*/
 	m_target.draw(*endText);
+}
+
+
+void World::ProcessCollisionsWithScreenWalls(Aircraft* a)
+{
+	float world_x = 300.f;
+	float world_y = 4500.f;
+	float world_width = 4096.f;
+	float world_height = 2304.f;
+
+	if (a->getPosition().x < world_x)
+	{
+		a->setPosition({ world_x + world_width, a->getPosition().y });
+	}
+	else if (a->getPosition().x > world_x + world_width)
+	{
+		a->setPosition({ world_x, a->getPosition().y });
+	}
+
+	if (a->getPosition().y < world_y)
+	{
+		a->setPosition({ a->getPosition().x, world_y + world_height });
+	}
+	else if (a->getPosition().y >= world_y + world_height)
+	{
+		a->setPosition({ a->getPosition().x, world_y });
+	}
+
 }
 
 

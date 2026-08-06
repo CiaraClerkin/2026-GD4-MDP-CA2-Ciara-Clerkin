@@ -41,7 +41,7 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
 	, m_health_display(nullptr)
 	, m_missile_display(nullptr)
-	, m_distance_travelled(0.f) 
+	, m_distance_travelled(0.f)
 	, m_directions_index(0)
 	, m_fire_rate(1)
 	, m_spread_level(1)
@@ -57,6 +57,7 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_pickups_enabled(true)
 	, m_identifier(0)
 	, textureRect(Table[static_cast<int>(m_type)].m_texture_rect)
+	, mIsFirstTime(true)
 {
 	m_sprite.setColor(sf::Color(color.x, color.y, color.z, 255));
 
