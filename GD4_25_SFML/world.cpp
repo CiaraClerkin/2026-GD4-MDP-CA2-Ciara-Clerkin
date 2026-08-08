@@ -28,7 +28,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_network_node(nullptr)
 	, m_finish_sprite(nullptr)
 	, m_timer()
-	, m_gameTime(10)
+	, m_gameTime(100)
 {
 	m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y });
 	LoadTextures();
@@ -104,9 +104,9 @@ void World::Draw()
 
 	}
 
-	if (m_player_aircraft.size() > 1 && m_timer.getElapsedTime().asSeconds() <= m_gameTime + 1 && !AreAllZombies())
+	if (m_timer.getElapsedTime().asSeconds() <= m_gameTime + 1 && !AreAllZombies())
 	{
-		std::string* timerText = new std::string(std::to_string((int)m_timer.getElapsedTime().asSeconds()));
+		std::string* timerText = new std::string(std::to_string(m_gameTime - (int)m_timer.getElapsedTime().asSeconds()) + "s");
 		std::unique_ptr<TextNode> timerTextNode(new TextNode(m_fonts, *timerText, 50));
 	
 		timerTextNode->setPosition({ m_camera.getCenter().x - (25 * timerText->length()) / 2, m_camera.getCenter().y - m_camera.getSize().y/2});
